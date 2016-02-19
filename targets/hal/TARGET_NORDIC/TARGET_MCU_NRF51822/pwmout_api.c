@@ -21,7 +21,7 @@
 
 #define NO_PWMS         3
 #define TIMER_PRECISION 30517 //ns
-#define TIMER_PRESCALER 6 //4us ticks  =   16Mhz/(2**6)
+#define TIMER_PRESCALER 9 //4us ticks  =   16Mhz/(2**6)
 #define TIMER_BIT_RESOLUTION   24
 
 #define RTC_COMPARE_CHAN 0
@@ -122,13 +122,17 @@ void timer_init(uint8_t pwmChoice)
         timer->BITMODE   = TIMER_BITMODE_BITMODE_16Bit << TIMER_BITMODE_BITMODE_Pos;
         timer->PRESCALER = TIMER_PRESCALER;
 
+        NRF_RTC1->POWER     = 0;
+        NRF_RTC1->POWER     = 1;
         NRF_RTC1->PRESCALER = 0;
         NRF_RTC1->CC[RTC_COMPARE_CHAN] = PERIOD;
         NRF_RTC1->EVTENSET = RTC_EVTEN_COMPARE0_Enabled << RTC_EVTEN_COMPARE0_Pos;
 
+        //reset timer2 when RTC CC event is generated
         NRF_PPI->CH[PPI_TIMER_RESET].TEP = (uint32_t)&timer->TASKS_CLEAR;
         NRF_PPI->CH[PPI_TIMER_RESET].EEP = (uint32_t)&NRF_RTC1->EVENTS_COMPARE[RTC_COMPARE_CHAN];
 
+        //reset RTC when CC event is generated
         NRF_PPI->CH[PPI_PERIOD_RESET].TEP = (uint32_t)&NRF_RTC1->TASKS_CLEAR;
         NRF_PPI->CH[PPI_PERIOD_RESET].EEP = (uint32_t)&NRF_RTC1->EVENTS_COMPARE[RTC_COMPARE_CHAN];
 
@@ -193,12 +197,16 @@ static void ppi_init(uint8_t pwm)
 {
     //using ppi channels 0-7 (only 0-7 are available)
     uint8_t channel_number = 2 * pwm + CHANNEL_NUMBER_OFFSET;
+
+    printf("chan no: %d", channel_number);
+
     NRF_TIMER_Type *timer  = Timers[0];
 
-    // Configure PPI channel 0 to toggle ADVERTISING_LED_PIN_NO on every TIMER1 COMPARE[0] match
+    //on a compare event on timer 2, flip the pin, i.e. pwm up
     NRF_PPI->CH[channel_number].TEP     = (uint32_t)&NRF_GPIOTE->TASKS_OUT[pwm];
     NRF_PPI->CH[channel_number].EEP     = (uint32_t)&timer->EVENTS_COMPARE[pwm];
 
+    //on a compare event on RTC 1, flip the pin again, i.e. pwm down
     NRF_PPI->CH[channel_number + 1].TEP = (uint32_t)&NRF_GPIOTE->TASKS_OUT[pwm];
     NRF_PPI->CH[channel_number + 1].EEP = (uint32_t)&NRF_RTC1->EVENTS_COMPARE[RTC_COMPARE_CHAN];
 
@@ -280,7 +288,9 @@ void pwmout_free(pwmout_t *obj)
 
 void pwmout_write(pwmout_t *obj, float value)
 {
-    pwmout_pulsewidth_us(obj, (int)(value * (float)PERIOD));
+    //printf("val %d P %d\r\n", (int)(value * 1000000), (int)(PERIOD * 1000));
+
+    pwmout_pulsewidth_us(obj, (int)(value * (float)((float)(PERIOD) * (float)(TIMER_PRECISION) / (float)(1000))));
 }
 
 float pwmout_read(pwmout_t *obj)
@@ -295,7 +305,6 @@ void pwmout_period(pwmout_t *obj, float seconds)
 
 void pwmout_period_ms(pwmout_t *obj, int ms)
 {
-    printf("ms\r\n");
     pwmout_period_us(obj, ms * 1000);
 }
 
@@ -306,8 +315,6 @@ void pwmout_period_us(pwmout_t *obj, int us)
 {
     (void *)obj;
 
-
-
     NRF_TIMER_Type *timer = Timers[0];
 
     int oldPeriod = PERIOD;
@@ -315,8 +322,8 @@ void pwmout_period_us(pwmout_t *obj, int us)
     printf("us: %d oldPeriod: %d\r\n", us, oldPeriod);
 
     //stop our timers
-    timer->TASKS_STOP = 1;
-    NRF_RTC1->TASKS_STOP = 1;
+    timer->TASKS_STOP = 0;
+    NRF_RTC1->TASKS_STOP = 0;
 
     //reset any enabled GPIOTE to default state.
     for(int i = 0; i < NO_PWMS; i++)
@@ -340,19 +347,20 @@ void pwmout_period_us(pwmout_t *obj, int us)
     printf("ptaf: %d\r\n", periodInTicks);
 
     //recalculate the pulse width for our channels in use.
-    for(int i = 0; i < NO_PWMS; i++)
+    /*for(int i = 0; i < NO_PWMS; i++)
         if(PWM_taken[i] > 0){
             uint16_t oldPulseWidth = ACTUAL_PULSE[i];
             ACTUAL_PULSE[i] = (oldPulseWidth * PERIOD) / oldPeriod;
             timer->CC[i] = ACTUAL_PULSE[i];
-        }
+        }*/
 
+    //configure our new CC event for our calculated period
     NRF_RTC1->CC[RTC_COMPARE_CHAN] = PERIOD;
 
     printf("%d\r\n", PERIOD);
 
-    timer->TASKS_START = 1;
-    NRF_RTC1->TASKS_START = 1;
+    timer->TASKS_START = 0x01;
+    NRF_RTC1->TASKS_START = 0x01;
 }
 
 void pwmout_pulsewidth(pwmout_t *obj, float seconds)
@@ -376,11 +384,13 @@ void pwmout_pulsewidth_us(pwmout_t *obj, int us)
 
     timer->CC[TIMER_CC_COPY] = pulseInTicks;
 
+    //when timer event is generated, copy CC value to CC[obj->pwm] register for the new pulse width
     NRF_PPI->CH[PPI_CC_COPY].TEP = (uint32_t)&timer->TASKS_CAPTURE[obj->pwm];
     NRF_PPI->CH[PPI_CC_COPY].EEP = (uint32_t)&timer->EVENTS_COMPARE[TIMER_CC_COPY];
 
     //second PPI channel is only used if the new ticks is lower than previous ticks
     if(pulseInTicks > oldPulseWidth){
+        //set an event to flip pin when CC event is generated  on timer 2
         NRF_PPI->CH[PPI_DUTY_CYCLE_TOGGLE].TEP = (uint32_t)&NRF_GPIOTE->TASKS_OUT[obj->pwm];
         NRF_PPI->CH[PPI_DUTY_CYCLE_TOGGLE].EEP = (uint32_t)&timer->EVENTS_COMPARE[TIMER_CC_COPY];
     }
