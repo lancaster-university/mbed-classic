@@ -28,7 +28,7 @@
 
 #define MAX_TMR1_COUNTER_VAL     0x0000FFFF               // Run the timer in 16 bit mode, for consistency with RTC algorithm above.
 #define TMR1_CLOCK_FREQ          (uint32_t)(1000000)	  // Run at 1MHz so the lower power 1MHz clock source can be used.
-#define TMR1_IRQ_PRI            1                        /**< Priority of the TMR1 interrupt (used
+#define TMR1_IRQ_PRI            3                        /**< Priority of the TMR1 interrupt (used
                                                           *  for checking for timeouts and executing
                                                           *  timeout handlers). This must be the same
                                                           *  as APP_IRQ_PRIORITY_LOW; taken from the
@@ -287,4 +287,3 @@ void us_ticker_clear_interrupt(void)
     //NRF_TIMER1->EVENTS_COMPARE[3] = 0;
     //NRF_TIMER1->EVENTS_COMPARE[0] = 0;
 }
-
