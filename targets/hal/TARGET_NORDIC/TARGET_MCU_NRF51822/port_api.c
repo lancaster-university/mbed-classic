@@ -75,10 +75,10 @@ void port_dir(port_t *obj, PinDirection dir)
 
 void port_write(port_t *obj, int value)
 {
-    *obj->reg_out = value;
+    *obj->reg_out = (*obj->reg_out & ~obj->mask) | (value & obj->mask);
 }
 
 int port_read(port_t *obj)
 {
-    return (*obj->reg_in);
+    return (*obj->reg_in & obj->mask);
 }
