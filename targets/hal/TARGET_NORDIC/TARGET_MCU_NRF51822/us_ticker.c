@@ -47,7 +47,7 @@
 #define MICROSECONDS_TO_TMR1_UNITS(MICROS)    MICROS
 
 static bool              us_ticker_inited = false;
-static volatile uint32_t overflowCount;                   /**< The number of times the 24-bit TMR1 counter has overflowed. */
+static volatile uint32_t overflowCount = 0;                   /**< The number of times the 24-bit TMR1 counter has overflowed. */
 static volatile bool     us_ticker_callbackPending = false;
 static uint32_t          us_ticker_callbackTimestamp;
 
@@ -141,14 +141,14 @@ void tmr1_stop(void)
  */
 static inline uint64_t tmr1_getCounter64(void)
 {
-    if (NRF_TIMER1->EVENTS_COMPARE[3]) {
-        overflowCount++;
-        NRF_TIMER1->EVENTS_COMPARE[3] = 0;
-    }
+    int o = 0;
 
     NRF_TIMER1->TASKS_CAPTURE[2] = 1;
 
-    return ((uint64_t)overflowCount << 16) | (NRF_TIMER1->CC[2] & MAX_TMR1_COUNTER_VAL);
+    if (NRF_TIMER1->EVENTS_COMPARE[3]) 
+        o++;
+
+    return (((uint64_t)(overflowCount+o)) << 16) | (NRF_TIMER1->CC[2] & MAX_TMR1_COUNTER_VAL);
 }
 
 /**
