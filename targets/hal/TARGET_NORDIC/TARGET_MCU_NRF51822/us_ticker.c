@@ -141,14 +141,19 @@ void tmr1_stop(void)
  */
 static inline uint64_t tmr1_getCounter64(void)
 {
-    int o = 0;
-
     NRF_TIMER1->TASKS_CAPTURE[2] = 1;
 
-    if (NRF_TIMER1->EVENTS_COMPARE[3]) 
-        o++;
+    NVIC_DisableIRQ(TIMER1_IRQn);
 
-    return (((uint64_t)(overflowCount+o)) << 16) | (NRF_TIMER1->CC[2] & MAX_TMR1_COUNTER_VAL);
+    if (NRF_TIMER1->EVENTS_COMPARE[3])
+    {
+        NRF_TIMER1->EVENTS_COMPARE[3] = 0;
+        overflowCount++;
+    }
+
+    NVIC_EnableIRQ(TIMER1_IRQn);
+
+    return (((uint64_t)(overflowCount)) << 16) | (NRF_TIMER1->CC[2] & MAX_TMR1_COUNTER_VAL);
 }
 
 /**
