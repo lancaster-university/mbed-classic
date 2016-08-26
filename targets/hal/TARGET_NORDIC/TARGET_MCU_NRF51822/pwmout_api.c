@@ -239,9 +239,50 @@ void pwmout_init(pwmout_t *obj, PinName pin)
     pwmout_write    (obj, 0);
 }
 
+/**
+  * Reassigns an already operational PWM channel to the given pin.
+  *
+  * @param pin The desired pin to begin a PWM wave.
+  * @param obj The PWM pwm channel to change
+  *
+  * TODO: Merge into mbed, at a later date.
+  */
+void pwmout_redirect(PinName pin, pwmout_t *obj)
+{
+    PinName oldPin = obj->pin;
+    uint8_t channel_number = (unit8_t) obj->pwm;
+    // Connect GPIO input buffers and configure PWM_OUTPUT_PIN_NUMBER as an output.
+    NRF_GPIO->PIN_CNF[pin] = (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
+                            | (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
+                            | (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos)
+                            | (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos)
+                            | (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
+
+    NRF_GPIO->OUTCLR = (1 << oldPin);
+    NRF_GPIO->OUTCLR = (1 << pin);
+
+    /* Finally configure the channel as the caller expects. If OUTINIT works, the channel is configured properly.
+       If it does not, the channel output inheritance sets the proper level. */
+
+    NRF_GPIOTE->CONFIG[channel_number] = (GPIOTE_CONFIG_MODE_Task << GPIOTE_CONFIG_MODE_Pos) |
+                                         ((uint32_t)pin << GPIOTE_CONFIG_PSEL_Pos) |
+                                         ((uint32_t)GPIOTE_CONFIG_POLARITY_Toggle << GPIOTE_CONFIG_POLARITY_Pos) |
+                                         ((uint32_t)GPIOTE_CONFIG_OUTINIT_Low << GPIOTE_CONFIG_OUTINIT_Pos); // ((uint32_t)GPIOTE_CONFIG_OUTINIT_High <<
+                                                                                                             // GPIOTE_CONFIG_OUTINIT_Pos);//
+
+    /* Three NOPs are required to make sure configuration is written before setting tasks or getting events */
+    __NOP();
+    __NOP();
+    __NOP();
+
+    NRF_TIMER2->CC[channel_number] = 0;
+}
+
 void pwmout_free(pwmout_t *obj)
 {
     MBED_ASSERT(obj->pwm != (PWMName)NC);
+
+    NRF_GPIOTE->CONFIG[(uint8_t) obj->pwm] = 0;
     PWM_taken[obj->pwm] = 0;
     pwmout_write(obj, 0);
 }

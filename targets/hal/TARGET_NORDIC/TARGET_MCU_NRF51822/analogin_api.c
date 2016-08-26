@@ -73,3 +73,14 @@ float analogin_read(analogin_t *obj)
     uint16_t value = analogin_read_u16(obj);
     return (float)value * (1.0f / (float)ADC_RANGE);
 }
+
+void analogin_disable()
+{
+    NRF_ADC->ENABLE = ADC_ENABLE_ENABLE_Disabled;
+
+    NRF_ADC->CONFIG = (ADC_CONFIG_RES_8bit << ADC_CONFIG_RES_Pos) |
+                      (ADC_CONFIG_INPSEL_SupplyTwoThirdsPrescaling << ADC_CONFIG_INPSEL_Pos) |
+                      (ADC_CONFIG_REFSEL_VBG                       << ADC_CONFIG_REFSEL_Pos) |
+                      (ADC_CONFIG_PSEL_Disabled                    << ADC_CONFIG_PSEL_Pos) |
+                      (ADC_CONFIG_EXTREFSEL_None                   << ADC_CONFIG_EXTREFSEL_Pos);
+}
