@@ -31,7 +31,7 @@
 #define TIMER_PRESCALER_MIN     4
 #define TIMER_PRESCALER_MAX     9
 
-static NRF_TIMER_Type *timer = NRF_TIMER2;
+static NRF_TIMER_Type* const timer = NRF_TIMER2;
 
 // PWM levels, both in absolute microseconds, and TIMER ticks (we cache both for simplicity and performance).
 static uint32_t pwm_us[PWM_CHANNELS] = {0};
@@ -66,13 +66,10 @@ void TIMER2_IRQHandler(void)
 
     // Disable this interrupt - it is needed only when PWM values change.
     timer->SHORTS = TIMER_SHORTS_COMPARE3_CLEAR_Msk;
-
     timer->INTENCLR = TIMER_INTENCLR_COMPARE3_Msk;
     timer->PRESCALER = pwm_prescaler;
     timer->CC[TIMER_PERIOD_CC] = pwm_period_ticks;
-
     timer->TASKS_START = 1;
-
     timer->EVENTS_COMPARE[TIMER_PERIOD_CC] = 0;
 }
 #ifdef __cplusplus
@@ -270,6 +267,7 @@ void pwmout_period_us(pwmout_t *obj, int us)
 {
     uint32_t p = 0x10000;
     int prescaler = TIMER_PRESCALER_MIN;
+    uint32_t old_period_us = pwm_period_us;
 
     // Quick validation - do nothing if the frequency is identical to it's current value.
     if (us == pwm_period_us)
@@ -288,6 +286,7 @@ void pwmout_period_us(pwmout_t *obj, int us)
 
     // Update global frequency timestamps.
     pwm_prescaler = prescaler;
+    pwm_period_us = us;
     pwm_period_ticks = PWM_US_TO_TICKS(us);
 
     pwmout_t pwm;
@@ -296,15 +295,14 @@ void pwmout_period_us(pwmout_t *obj, int us)
 
     // Update all PWM channel values to maintin the same duty cycle (mbed standard behaviour).
     for (int i=0; i<PWM_CHANNELS; i++)
+    {
         if (pwm_ticks[i] != PWM_VALUE_INVALID)
         {
             pwm.pin = pwm_pins[i];
-            pwmout_pulsewidth_us(&pwm, (uint32_t) ((float)pwm_us[i] * ((float)us / (float)pwm_period_us)));
+            pwmout_pulsewidth_us(&pwm, (uint32_t) ((float)pwm_us[i] * ((float)us / (float)old_period_us)));
             pwm.pin = NC;
         }
-
-    // cache our new period in microseconds for later use
-    pwm_period_us = us;
+    }
 }
 
 void pwmout_pulsewidth(pwmout_t *obj, float seconds)
