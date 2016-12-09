@@ -84,7 +84,7 @@ typedef enum {
     //RHS Digital TOP to BOT
     SCL = PA23,
     SDA = PA22,
-    AREF = PA13,
+    AREF = PA03,
 
     //DIGITAL HIGH
     D13 = PA17,
