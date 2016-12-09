@@ -100,7 +100,7 @@ typedef enum {
     D5 = PA15,
     D4 = PA08,
     D3 = PA09,
-    D2 = PA15,
+    D2 = PA14,
     D1 = PA10,
     D0 = PA11,
 
