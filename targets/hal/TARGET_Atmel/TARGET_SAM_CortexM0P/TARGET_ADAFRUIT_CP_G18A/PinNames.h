@@ -87,16 +87,19 @@ typedef enum {
     SLIDE_SWITCH = PA15,
 
     D11 = PA16,
-    LED = D13 = PA17,
+    LED = PA17,
+    D13 = PA17,
     D10 = PA18,
     D12 = PA19,
     D6 = PA20,
-    D7 = PA21
+    D7 = PA21,
 
     CAPPUSH = PA22,
     D27 = PA23,
     D_MINUS = PA24,
+    USBTX = PA24,
     D_PLUS = PA25,
+    USBRX = PA25,
     TXLED = PA27,
     LEFT_BUTTON = PA28,
     SWCLK = PA30,
