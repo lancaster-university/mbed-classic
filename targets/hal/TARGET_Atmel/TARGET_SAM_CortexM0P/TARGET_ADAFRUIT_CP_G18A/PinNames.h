@@ -69,48 +69,47 @@ typedef enum {
     PB22  = 54,
     PB23  = 55,
 
-    // arduino core pin mapping...
-    //https://github.com/arduino/ArduinoCore-samd/blob/df982572844f3df9bf5061ae5e322994dfdbcc0a/variants/arduino_zero/variant.cpp
-    ATN = PA13,
-
-    //LHS AIN... TOP to BOT
-    A0 = PA02,
-    A1 = PB08,
-    A2 = PB09,
+    LIS_SDA = PA00,
+    LIS_SCL = PA01,
+    SPEAKER = PA02,
     A3 = PA04,
     A4 = PA05,
-    A5 = PB02,
-
-    //RHS Digital TOP to BOT
-    SCL = PA23,
-    SDA = PA22,
-    AREF = PA03,
-
-    //DIGITAL HIGH
-    D13 = PA17,
-    D12 = PA19,
-    D11 = PA16,
-    D10 = PA18,
-    D9 = PA07,
     D8 = PA06,
+    D9 = PA07,
 
-    //DIGITAL LOW
-    D7 = PA21,
+    SOUND_SENSE = PA08,
+    TEMP_SENSE = PA09,
+    LIS_IRQ = PA10,
+    LIGHT = PA11,
+    MISO = PA12,
+
+    RIGHT_BUTTON = PA14,
+    SLIDE_SWITCH = PA15,
+
+    D11 = PA16,
+    LED = D13 = PA17,
+    D10 = PA18,
+    D12 = PA19,
     D6 = PA20,
-    D5 = PA15,
-    D4 = PA08,
-    D3 = PA09,
-    D2 = PA14,
-    D1 = PA10,
-    D0 = PA11,
+    D7 = PA21
 
-    USBTX = PB10,
-    USBRX = PB11,
+    CAPPUSH = PA22,
+    D27 = PA23,
+    D_MINUS = PA24,
+    D_PLUS = PA25,
+    TXLED = PA27,
+    LEFT_BUTTON = PA28,
+    SWCLK = PA30,
+    SWDIO = PA31,
 
-    LED = PA17,
-
-    TX_LED = PA27,
-    RX_LED = PB03,
+    SDA = PB02,
+    SCL = PB03,
+    TXD = PB08,
+    RXD = PB09,
+    MOSI = PB10,
+    SCK = PB11,
+    FLASH_CS = PB22,
+    NEOPIX = PB23,
 
     // Not connected
     NC = (int)0xFFFFFFFF
