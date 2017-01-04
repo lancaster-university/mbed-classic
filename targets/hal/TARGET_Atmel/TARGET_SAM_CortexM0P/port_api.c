@@ -23,10 +23,10 @@
 #define PORTA_MASK	0xDBDFFFF3  // mask for available pins in Port A
 #define PORTB_MASK	0xC0C3C30D  // mask for available pins in Port B
 #define PORTC_MASK	0x000D0000  // mask for available pins in Port C
-#elif defined(TARGET_SAMD21J18A) || defined(TARGET_GENUINO_G18A)
+#elif defined(TARGET_SAMD21J18A)
 #define PORTA_MASK  0xDBFFFFFF  // mask for available pins in Port A
 #define PORTB_MASK  0xC0C3FFFF  // mask for available pins in Port B
-#elif defined(TARGET_SAMD21G18A)
+#elif defined(TARGET_SAMD21G18A) || defined(TARGET_GENUINO_G18A) || defined(TARGET_ADAFRUIT_CP_G18A)
 #define PORTA_MASK  0xDBFFFFFF  // mask for available pins in Port A
 #define PORTB_MASK  0x00C00F0C  // mask for available pins in Port B
 #elif defined(TARGET_SAML21J18A)
