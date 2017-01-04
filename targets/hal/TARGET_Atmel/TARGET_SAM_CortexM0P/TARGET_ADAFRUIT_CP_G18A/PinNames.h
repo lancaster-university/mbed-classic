@@ -97,9 +97,7 @@ typedef enum {
     CAPPUSH = PA22,
     D27 = PA23,
     D_MINUS = PA24,
-    USBTX = PA24,
     D_PLUS = PA25,
-    USBRX = PA25,
     TXLED = PA27,
     LEFT_BUTTON = PA28,
     SWCLK = PA30,
@@ -115,7 +113,10 @@ typedef enum {
     NEOPIX = PB23,
 
     // Not connected
-    NC = (int)0xFFFFFFFF
+    NC = (int)0xFFFFFFFF,
+
+    USBTX = NC,
+    USBRX = NC
 } PinName;
 
 typedef enum {
