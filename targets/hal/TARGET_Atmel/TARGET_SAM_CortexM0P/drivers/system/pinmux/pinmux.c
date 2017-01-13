@@ -72,10 +72,10 @@ static void _system_pinmux_config(
     if (!config->powersave) {
         /* Enable the pin peripheral MUX flag if non-GPIO selected (pinmux will
          * be written later) and store the new MUX mask */
-        if (config->mux_position != SYSTEM_PINMUX_GPIO) {
-            pin_cfg |= PORT_WRCONFIG_PMUXEN;
-            pin_cfg |= (config->mux_position << PORT_WRCONFIG_PMUX_Pos);
-        }
+        //if (config->mux_position != SYSTEM_PINMUX_GPIO) {
+        pin_cfg |= PORT_WRCONFIG_PMUXEN;
+        pin_cfg |= (config->mux_position << PORT_WRCONFIG_PMUX_Pos);
+        //}
 
         /* Check if the user has requested that the input buffer be enabled */
         if ((config->direction == SYSTEM_PINMUX_PIN_DIR_INPUT) ||

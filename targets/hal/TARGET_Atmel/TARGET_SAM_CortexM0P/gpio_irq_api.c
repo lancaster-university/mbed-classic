@@ -32,7 +32,7 @@ static uint32_t channel_ids[CHANNEL_NUM] = {0};
 static gpio_irq_handler irq_handler;
 uint8_t ext_int_pins[EIC_NUMBER_OF_INTERRUPTS] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-void gpio_irq(void)
+void EIC_Handler()
 {
     uint32_t current_channel;
     uint32_t mask;
@@ -63,7 +63,6 @@ int gpio_irq_init(gpio_irq_t *obj, PinName pin, gpio_irq_handler handler, uint32
         return -1;
 
     IRQn_Type irq_n = (IRQn_Type)0;
-    uint32_t vector = 0;
     int int_channel = 0;
     irq_handler = handler;  // assuming the usage of these apis in mbed layer only
 
@@ -83,8 +82,6 @@ int gpio_irq_init(gpio_irq_t *obj, PinName pin, gpio_irq_handler handler, uint32
     ext_int_pins[int_channel] = pin;
 
     irq_n = EIC_IRQn;
-    vector = (uint32_t)gpio_irq;
-    NVIC_SetVector(irq_n, vector);
     NVIC_EnableIRQ(irq_n);
     obj->ch = int_channel;
     channel_ids[int_channel] = id;
