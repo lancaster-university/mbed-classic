@@ -146,7 +146,7 @@ void pwmout_init(pwmout_t* obj, PinName pin)
     obj->pin = pin;
     obj->period = 0xFFFF;
     obj->duty_cycle = 1;
-    obj->clock_source = GCLK_GENERATOR_0; /* 8Mhz input clock */
+    obj->clock_source = GCLK_PERIPHERAL_CLOCK; /* 8Mhz input clock */
     obj->clock_prescaler = (enum tc_clock_prescaler)TCC_CLOCK_PRESCALER_DIV8; /* Default to 1MHz for 8Mhz input clock */
 
     /* Update the changes */

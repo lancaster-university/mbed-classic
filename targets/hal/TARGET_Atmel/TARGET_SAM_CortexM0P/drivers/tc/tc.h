@@ -1047,7 +1047,7 @@ static inline void tc_get_config_defaults(
     Assert(config);
 
     /* Write default config to config struct */
-    config->clock_source               = GCLK_GENERATOR_0;
+    config->clock_source               = GCLK_PERIPHERAL_CLOCK;
     config->counter_size               = TC_COUNTER_SIZE_16BIT;
     config->clock_prescaler            = TC_CLOCK_PRESCALER_DIV1;
     config->wave_generation            = TC_WAVE_GENERATION_NORMAL_FREQ;

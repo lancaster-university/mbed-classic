@@ -143,7 +143,7 @@ void dac_get_config_defaults(
     /* Default configuration values */
     config->differential_mode = false;
     config->reference      = DAC_REFERENCE_INTREF;
-    config->clock_source   = GCLK_GENERATOR_0;
+    config->clock_source   = GCLK_PERIPHERAL_CLOCK;
 }
 
 /**

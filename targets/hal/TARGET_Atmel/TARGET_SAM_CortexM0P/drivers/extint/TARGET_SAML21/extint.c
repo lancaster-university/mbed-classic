@@ -60,13 +60,13 @@
 
 #if (EXTINT_CLOCK_SELECTION == EXTINT_CLK_GCLK)
 #if !defined(EXTINT_CLOCK_SOURCE) || defined(__DOXYGEN__)
-#  warning  EXTINT_CLOCK_SOURCE is not defined, assuming GCLK_GENERATOR_0.
+#  warning  EXTINT_CLOCK_SOURCE is not defined, assuming GCLK_PERIPHERAL_CLOCK.
 
 /** Configuration option, setting the EIC clock source which can be used for
  *  EIC edge detection or filtering. This option may be overridden in the module
  *  configuration header file \c conf_extint.h.
  */
-#  define EXTINT_CLOCK_SOURCE GCLK_GENERATOR_0
+#  define EXTINT_CLOCK_SOURCE GCLK_PERIPHERAL_CLOCK
 #endif
 #endif
 

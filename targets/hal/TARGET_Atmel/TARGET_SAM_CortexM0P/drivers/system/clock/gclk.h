@@ -135,6 +135,10 @@ enum gclk_generator {
 #endif
 };
 
+#ifndef GCLK_PERIPHERAL_CLOCK
+#define GCLK_PERIPHERAL_CLOCK GCLK_GENERATOR_0
+#endif
+
 /**
  * \brief Generic Clock Generator configuration structure.
  *
@@ -260,7 +264,7 @@ static inline void system_gclk_chan_get_config_defaults(
     Assert(config);
 
     /* Default configuration values */
-    config->source_generator = GCLK_GENERATOR_0;
+    config->source_generator = GCLK_PERIPHERAL_CLOCK;
 }
 
 void system_gclk_chan_set_config(

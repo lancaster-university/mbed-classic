@@ -967,7 +967,7 @@ static inline void usart_get_config_defaults(
     config->ext_clock_freq   = 0;
     config->mux_setting      = USART_RX_1_TX_2_XCK_3;
     config->run_in_standby   = false;
-    config->generator_source = GCLK_GENERATOR_0;
+    config->generator_source = GCLK_PERIPHERAL_CLOCK;
     config->pinmux_pad0      = PINMUX_DEFAULT;
     config->pinmux_pad1      = PINMUX_DEFAULT;
     config->pinmux_pad2      = PINMUX_DEFAULT;

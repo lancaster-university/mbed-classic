@@ -304,10 +304,10 @@ void serial_init(serial_t *obj, PinName tx, PinName rx)
 #endif
 
     /* Set up the GCLK for the module */
-    gclk_chan_conf.source_generator = GCLK_GENERATOR_0;
+    gclk_chan_conf.source_generator = GCLK_PERIPHERAL_CLOCK;
     system_gclk_chan_set_config(gclk_index, &gclk_chan_conf);
     system_gclk_chan_enable(gclk_index);
-    sercom_set_gclk_generator(GCLK_GENERATOR_0, false);
+    sercom_set_gclk_generator(GCLK_PERIPHERAL_CLOCK, false);
 
     pSERIAL_S(obj)->mux_setting = muxsetting;
     /* Set configuration according to the config struct */
@@ -393,10 +393,10 @@ void serial_baud(serial_t *obj, int baudrate)
 #else
     gclk_index   = sercom_index + SERCOM0_GCLK_ID_CORE;
 #endif
-    gclk_chan_conf.source_generator = GCLK_GENERATOR_0;
+    gclk_chan_conf.source_generator = GCLK_PERIPHERAL_CLOCK;
     system_gclk_chan_set_config(gclk_index, &gclk_chan_conf);
     system_gclk_chan_enable(gclk_index);
-    sercom_set_gclk_generator(GCLK_GENERATOR_0, false);
+    sercom_set_gclk_generator(GCLK_PERIPHERAL_CLOCK, false);
 
     /* Get baud value from mode and clock */
     _sercom_get_async_baud_val(pSERIAL_S(obj)->baudrate, system_gclk_chan_get_hz(gclk_index), &baud, mode, sample_num);

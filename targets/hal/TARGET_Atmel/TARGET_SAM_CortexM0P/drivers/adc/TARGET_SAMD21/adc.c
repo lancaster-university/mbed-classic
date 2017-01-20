@@ -85,7 +85,7 @@
 void adc_get_config_defaults(struct adc_config *const config)
 {
     Assert(config);
-    config->clock_source                  = GCLK_GENERATOR_0;
+    config->clock_source                  = GCLK_PERIPHERAL_CLOCK;
     config->reference                     = ADC_REFERENCE_INT1V;
     config->clock_prescaler               = ADC_CLOCK_PRESCALER_DIV4;
     config->resolution                    = ADC_RESOLUTION_12BIT;

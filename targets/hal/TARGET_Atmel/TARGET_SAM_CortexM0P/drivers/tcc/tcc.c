@@ -191,7 +191,7 @@ void tcc_get_config_defaults(
 
     config->counter.period                 = _tcc_maxs[module_index];
 
-    config->counter.clock_source           = GCLK_GENERATOR_0;
+    config->counter.clock_source           = GCLK_PERIPHERAL_CLOCK;
     config->counter.clock_prescaler        = TCC_CLOCK_PRESCALER_DIV1;
     config->counter.reload_action          = TCC_RELOAD_ACTION_GCLK;
 

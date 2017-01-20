@@ -588,7 +588,7 @@ static inline void i2c_slave_get_config_defaults(
 #if I2C_SLAVE_CALLBACK_MODE == true
     config->enable_nack_on_address = false;
 #endif
-    config->generator_source = GCLK_GENERATOR_0;
+    config->generator_source = GCLK_PERIPHERAL_CLOCK;
     config->run_in_standby = false;
     config->pinmux_pad0 = PINMUX_DEFAULT;
     config->pinmux_pad1 = PINMUX_DEFAULT;

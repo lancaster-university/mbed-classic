@@ -176,7 +176,7 @@ void dac_get_config_defaults(
     config->databuf_protection_bypass = false;
 #endif
     config->voltage_pump_disable = false;
-    config->clock_source   = GCLK_GENERATOR_0;
+    config->clock_source   = GCLK_PERIPHERAL_CLOCK;
     config->run_in_standby = false;
 #if (SAMC21)
     config->dither_mode    = false;

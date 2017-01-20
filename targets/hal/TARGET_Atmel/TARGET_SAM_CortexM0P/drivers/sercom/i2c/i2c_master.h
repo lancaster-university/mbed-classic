@@ -444,7 +444,7 @@ static inline void i2c_master_get_config_defaults(
     config->baud_rate_high_speed = I2C_MASTER_BAUD_RATE_3400KHZ;
     config->transfer_speed       = I2C_MASTER_SPEED_STANDARD_AND_FAST;
 #endif
-    config->generator_source = GCLK_GENERATOR_0;
+    config->generator_source = GCLK_PERIPHERAL_CLOCK;
     config->run_in_standby   = false;
     config->start_hold_time  = I2C_MASTER_START_HOLD_TIME_300NS_600NS;
     config->buffer_timeout   = 65535;

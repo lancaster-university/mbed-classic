@@ -153,7 +153,7 @@ uint8_t _adc_get_inst_index(
 void adc_get_config_defaults(struct adc_config *const config)
 {
     Assert(config);
-    config->clock_source                  = GCLK_GENERATOR_0;
+    config->clock_source                  = GCLK_PERIPHERAL_CLOCK;
     config->reference                     = ADC_REFERENCE_INTREF;
     config->clock_prescaler               = ADC_CLOCK_PRESCALER_DIV2;
     config->resolution                    = ADC_RESOLUTION_12BIT;
