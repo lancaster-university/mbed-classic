@@ -113,7 +113,25 @@ add_library(mbed-classic
     ${MBED_COMMON_INCLUDE_DIRS}
 )
 
-target_include_directories(mbed-classic PUBLIC ${MBED_COMMON_INCLUDE_DIRS} ${MBED_TARGET_INCLUDE_DIRS})
+if(CODAL_BUILD_SYSTEM AND CODAL_HEADER_EXTRACTION)
+    target_include_directories(mbed-classic PUBLIC ${MBED_COMMON_INCLUDE_DIRS} ${MBED_TARGET_INCLUDE_DIRS})
+
+    include(../../utils/cmake/util.cmake)
+
+    set(INCLUDE_FILES "")
+
+    foreach(dir ${MBED_TARGET_INCLUDE_DIRS})
+        HEADER_FILES(TEMP "${dir}")
+        list(APPEND INCLUDE_FILES ${TEMP})
+    endforeach()
+
+    foreach(dir ${MBED_COMMON_INCLUDE_DIRS})
+        HEADER_FILES(TEMP "${dir}")
+        list(APPEND INCLUDE_FILES ${TEMP})
+    endforeach()
+
+    file(COPY ${INCLUDE_FILES} DESTINATION "../../build/mbed-classic/includes")
+endif()
 
 if(CMAKE_COMPILER_IS_GNUCC)
     target_link_libraries(mbed-classic
