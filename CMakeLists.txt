@@ -113,10 +113,11 @@ add_library(mbed-classic
     ${MBED_COMMON_INCLUDE_DIRS}
 )
 
-if(CODAL_BUILD_SYSTEM AND CODAL_HEADER_EXTRACTION)
+if(CODAL_BUILD_SYSTEM OR CODAL_HEADER_EXTRACTION)
+    #expose headers
     target_include_directories(mbed-classic PUBLIC ${MBED_COMMON_INCLUDE_DIRS} ${MBED_TARGET_INCLUDE_DIRS})
 
-    include(../../utils/cmake/util.cmake)
+    include("${CODAL_UTILS_LOCATION}")
 
     set(INCLUDE_FILES "")
 
