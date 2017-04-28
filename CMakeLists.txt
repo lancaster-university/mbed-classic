@@ -131,6 +131,9 @@ if(CODAL_BUILD_SYSTEM OR CODAL_HEADER_EXTRACTION)
         list(APPEND INCLUDE_FILES ${TEMP})
     endforeach()
 
+    HEADER_FILES(TEMP "./api")
+    list(APPEND INCLUDE_FILES ${TEMP})
+
     file(COPY ${INCLUDE_FILES} DESTINATION "../../build/mbed-classic/includes")
 endif()
 
