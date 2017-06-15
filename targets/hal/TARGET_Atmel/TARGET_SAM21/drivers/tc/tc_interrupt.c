@@ -114,35 +114,31 @@ void _tc_interrupt_handler(
                                          module->register_callback_mask &
                                          module->enable_callback_mask;
 
+    /* Clear all interrupt flags, before we start setting callbacks, which can take a long
+     * time during which the timer might trigger again. */
+    module->hw->COUNT8.INTFLAG.reg = interrupt_and_callback_status_mask;
+
     /* Check if an Overflow interrupt has occurred */
     if (interrupt_and_callback_status_mask & TC_INTFLAG_OVF) {
         /* Invoke registered and enabled callback function */
         (module->callback[TC_CALLBACK_OVERFLOW])(module);
-        /* Clear interrupt flag */
-        module->hw->COUNT8.INTFLAG.reg = TC_INTFLAG_OVF;
     }
 
     /* Check if an Error interrupt has occurred */
     if (interrupt_and_callback_status_mask & TC_INTFLAG_ERR) {
         /* Invoke registered and enabled callback function */
         (module->callback[TC_CALLBACK_ERROR])(module);
-        /* Clear interrupt flag */
-        module->hw->COUNT8.INTFLAG.reg = TC_INTFLAG_ERR;
     }
 
     /* Check if an Match/Capture Channel 0 interrupt has occurred */
     if (interrupt_and_callback_status_mask & TC_INTFLAG_MC(1)) {
         /* Invoke registered and enabled callback function */
         (module->callback[TC_CALLBACK_CC_CHANNEL0])(module);
-        /* Clear interrupt flag */
-        module->hw->COUNT8.INTFLAG.reg = TC_INTFLAG_MC(1);
     }
 
     /* Check if an Match/Capture Channel 1 interrupt has occurred */
     if (interrupt_and_callback_status_mask & TC_INTFLAG_MC(2)) {
         /* Invoke registered and enabled callback function */
         (module->callback[TC_CALLBACK_CC_CHANNEL1])(module);
-        /* Clear interrupt flag */
-        module->hw->COUNT8.INTFLAG.reg = TC_INTFLAG_MC(2);
     }
 }
