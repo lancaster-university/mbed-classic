@@ -86,13 +86,13 @@ void adc_get_config_defaults(struct adc_config *const config)
 {
     Assert(config);
     config->clock_source                  = GCLK_PERIPHERAL_CLOCK;
-    config->reference                     = ADC_REFERENCE_INT1V;
+    config->reference                     = ADC_REFERENCE_INTVCC1;
     config->clock_prescaler               = ADC_CLOCK_PRESCALER_DIV4;
     config->resolution                    = ADC_RESOLUTION_12BIT;
     config->window.window_mode            = ADC_WINDOW_MODE_DISABLE;
     config->window.window_upper_value     = 0;
     config->window.window_lower_value     = 0;
-    config->gain_factor                   = ADC_GAIN_FACTOR_1X;
+    config->gain_factor                   = ADC_GAIN_FACTOR_DIV2;
 #if SAMR21
     config->positive_input                = ADC_POSITIVE_INPUT_PIN6 ;
 #else
