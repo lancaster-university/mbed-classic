@@ -61,7 +61,7 @@ const PinMap PinMap_SERCOM_PAD[] = {
     {PA13, SERCOM2_PAD1, 2},
     {PA14, SERCOM2_PAD2, 2},
     {PA15, SERCOM2_PAD3, 2},
-    {PA16, SERCOM1_PAD0, 2},
+    {PA16, SERCOM3_PAD0, 3},
     {PA17, SERCOM1_PAD1, 2},
     {PA18, SERCOM1_PAD2, 2},
     {PA19, SERCOM1_PAD3, 2},
