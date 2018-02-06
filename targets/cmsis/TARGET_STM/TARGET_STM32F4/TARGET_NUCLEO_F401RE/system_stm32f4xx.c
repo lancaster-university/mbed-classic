@@ -557,6 +557,7 @@ void SystemInit_ExtMemCtl(void)
   */
 void SetSysClock(void)
 {
+#if 0
   /* 1- Try to start with HSE and external clock */
 #if USE_PLL_HSE_EXTC != 0
   if (SetSysClock_PLL_HSE(1) == 0)
@@ -580,6 +581,8 @@ void SetSysClock(void)
   
   /* Output clock on MCO2 pin(PC9) for debugging purpose */
   //HAL_RCC_MCOConfig(RCC_MCO2, RCC_MCO2SOURCE_SYSCLK, RCC_MCODIV_1); // 84 MHz
+#endif
+	SetSysClock_PLL_HSE(0);  
 }
 
 #if (USE_PLL_HSE_XTAL != 0) || (USE_PLL_HSE_EXTC != 0)
