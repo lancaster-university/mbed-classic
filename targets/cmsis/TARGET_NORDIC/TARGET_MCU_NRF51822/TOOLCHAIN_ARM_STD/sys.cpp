@@ -12,6 +12,11 @@ extern "C" {
 #include <rt_misc.h>
 #include <stdint.h>
 
+#if __ARMCC_VERSION >= 6000000
+#include <arm_compat.h>
+#endif
+
+
 extern char Image$$RW_IRAM1$$ZI$$Limit[];
 
 extern __value_in_regs struct __initial_stackheap __user_setup_stackheap(uint32_t R0, uint32_t R1, uint32_t R2, uint32_t R3) {
